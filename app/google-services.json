@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "486343620738",
+    "project_id": "collememaybe-cf4b1",
+    "storage_bucket": "collememaybe-cf4b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486343620738:android:bdaccbf238acbdf5dd9c9b",
+        "android_client_info": {
+          "package_name": "dk.colle.collememaybe"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "486343620738-qcrvgvio6hnvgoecq55jntf2p7kqb7fu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDHW1CTFvSa9yftRgcWVKEqjvPgeWqi92w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "486343620738-qcrvgvio6hnvgoecq55jntf2p7kqb7fu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
