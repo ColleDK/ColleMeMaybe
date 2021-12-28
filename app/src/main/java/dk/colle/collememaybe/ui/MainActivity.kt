@@ -14,6 +14,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,26 +50,17 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun StartScreen(navController: NavController, viewmodel: MainViewModel) {
-    var currentUser = viewmodel.user.value
+    val currentUser = viewmodel.user.collectAsState()
 
     Column(Modifier.fillMaxSize(1f)) {
         Button(onClick = {
             Log.d("main activity", "Button clicked")
-            Firebase.auth.createUserWithEmailAndPassword(
-                "williamdk@live.dk",
-                "29i312mklefsal23910feadx"
-            ).addOnCompleteListener{
-                if (it.isSuccessful){
-                    currentUser = it.result?.user
-                }
-            }
-
             viewmodel.createUser(
                 "williamdk@live.dk",
                 "29i312mklefsal23910feadx"
             )
         }, modifier = Modifier.wrapContentSize(Alignment.Center)) {
-            HeaderText(title = "Welcome ${currentUser?.email}")
+            HeaderText(title = "Welcome ${currentUser.value?.email}")
         }
     }
 }

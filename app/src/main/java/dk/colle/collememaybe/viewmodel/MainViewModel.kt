@@ -51,16 +51,32 @@ class MainViewModel @Inject constructor(
 
     private fun signUpUser(email: String, password: String) = viewModelScope.launch {
         try {
-            repository.signInWithEmailPassword(email = email, password = password, callback = {
+            val firebaseUser = repository.signUpWithEmailPassword(email = email, password = password)
+            firebaseUser?.let {
                 _user.value = it
-                Log.d(TAG, "Got user $it")
-            })
+                _events.send(AllEvents.Message("User created"))
+            }
+
         } catch (e: Exception){
             val error = e.toString().split(":").toTypedArray()
             Log.d(TAG, "Create user: ${error[1]}")
             _events.send(AllEvents.Error(error[1]))
         }
     }
+
+
+    fun signOut() = viewModelScope.launch {
+        try {
+            repository.signOut()
+            _events.send(AllEvents.Message("User signed out"))
+            Log.d(TAG, "User signed out")
+        } catch (e: Exception){
+            val error = e.toString().split(":").toTypedArray()
+            Log.d(TAG, "Create user: ${error[1]}")
+            _events.send(AllEvents.Error(error[1]))
+        }
+    }
+
 
 
 

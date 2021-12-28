@@ -3,9 +3,9 @@ package dk.colle.collememaybe.repository
 import com.google.firebase.auth.FirebaseUser
 
 interface BaseAuthRepository {
-    suspend fun signInWithEmailPassword(email:String , password:String, callback: (result: FirebaseUser?) -> Unit)
+    suspend fun signInWithEmailPassword(email:String , password:String) : FirebaseUser?
 
-    suspend fun signUpWithEmailPassword(email: String , password: String, callback: (result: FirebaseUser?) -> Unit)
+    suspend fun signUpWithEmailPassword(email: String , password: String) : FirebaseUser?
 
     fun signOut() : FirebaseUser?
 
