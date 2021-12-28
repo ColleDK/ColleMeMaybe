@@ -3,6 +3,7 @@
     package="dk.colle.collememaybe">
 
     <application
+        android:name=".BaseApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -10,7 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ColleMeMaybe">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.auth.login_frag"
+            android:exported="false"
+            android:label="@string/title_activity_login_frag"
+            android:theme="@style/Theme.ColleMeMaybe.NoActionBar" />
+        <activity
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.ColleMeMaybe.NoActionBar">
