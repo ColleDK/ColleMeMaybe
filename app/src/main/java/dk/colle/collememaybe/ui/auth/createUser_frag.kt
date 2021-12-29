@@ -1,0 +1,99 @@
+package dk.colle.collememaybe.ui.auth
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import dk.colle.collememaybe.ui.standardcomponents.AnimatedButton
+import dk.colle.collememaybe.ui.standardcomponents.InputField
+import dk.colle.collememaybe.viewmodel.AuthViewModel
+
+class createUser_frag : Fragment() {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        return ComposeView(requireContext().apply {
+
+        })
+    }
+}
+
+
+@ExperimentalComposeUiApi
+@Composable
+fun CreateUserScreen(navController: NavController, viewModel: AuthViewModel){
+    Column(Modifier.fillMaxSize(1f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        CreateUserHeader()
+        CreateUserInputs(viewModel = viewModel)
+    }
+}
+
+@Composable
+fun CreateUserHeader(){
+    
+}
+
+@ExperimentalComposeUiApi
+@Composable
+fun CreateUserInputs(viewModel: AuthViewModel){
+    val nameState = remember {
+        InputTextState()
+    }
+
+    val ageState = remember {
+        InputTextState()
+    }
+
+    val emailState = remember {
+        InputTextState()
+    }
+
+    val passwordState = remember {
+        InputTextState()
+    }
+
+    val phoneState = remember {
+        InputTextState()
+    }
+
+    InputField(label = "Enter name", textState = nameState)
+    Spacer(modifier = Modifier
+        .fillMaxWidth(1f)
+        .height(15.dp))
+    InputField(label = "Enter age", textState = ageState, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
+    Spacer(modifier = Modifier
+        .fillMaxWidth(1f)
+        .height(15.dp))
+    InputField(label = "Enter email", textState = emailState , keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email))
+    Spacer(modifier = Modifier
+        .fillMaxWidth(1f)
+        .height(15.dp))
+    InputField(label = "Enter password", textState = passwordState , keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password))
+    Spacer(modifier = Modifier
+        .fillMaxWidth(1f)
+        .height(15.dp))
+    InputField(label = "Enter phone number", textState = phoneState , keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone))
+    Spacer(modifier = Modifier
+        .fillMaxWidth(1f)
+        .height(15.dp))
+    AnimatedButton(buttonText = "Confirm", onClick = { viewModel.checkInputs(name = nameState.text, age = ageState.text, email = emailState.text, password = passwordState.text, phoneNumber = phoneState.text) })
+}
+
+
+
+class InputTextState(){
+    var text: String by mutableStateOf("")
+}

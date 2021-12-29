@@ -49,5 +49,17 @@ fun ColleMeMaybeTheme(
 }
 
 @get:Composable
-val Colors.headerColor: Color
+val Colors.textColor: Color
     get() = Color(0xFF000000)
+
+@get:Composable
+val Colors.inputTextBackground: Color
+    get() = Color(0xFF81D4FA)
+
+@get:Composable
+val Colors.inputTextText: Color
+    get() = Color(0xFF9FA8DA)
+
+@get:Composable
+val Colors.buttonColor: Color
+    get() = Color(0xFFFFCC80)

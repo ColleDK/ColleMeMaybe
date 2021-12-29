@@ -72,7 +72,7 @@ dependencies {
     implementation 'org.webrtc:google-webrtc:1.0.26885'
 
     // Firebase storage
-    implementation 'com.google.firebase:firebase-storage:20.0.0'
+    implementation 'com.google.firebase:firebase-firestore-ktx:24.0.0'
 
     // Firebase firestore
     implementation 'com.google.firebase:firebase-firestore:24.0.0'

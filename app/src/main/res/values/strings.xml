@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">ColleMeMaybe</string>
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_login_frag">login_frag</string>
+    <string name="title_activity_create_user_frag">createUser_frag</string>
 </resources>

@@ -11,6 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ColleMeMaybe">
         <activity
+            android:name=".ui.auth.createUser_frag"
+            android:exported="false"
+            android:label="@string/title_activity_create_user_frag"
+            android:theme="@style/Theme.ColleMeMaybe.NoActionBar" />
+        <activity
             android:name=".ui.auth.login_frag"
             android:exported="false"
             android:label="@string/title_activity_login_frag"
