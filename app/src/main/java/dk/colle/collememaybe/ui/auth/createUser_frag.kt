@@ -7,14 +7,12 @@ import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -71,18 +69,18 @@ fun CreateUserInputs(viewModel: AuthViewModel){
     }
 
     val passwordClickState = remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
 
     val phoneState = remember {
         InputTextState()
     }
 
-    InputField(label = "Enter name", textState = nameState)
+    InputField(label = "Enter name", textState = nameState, leadIcon = Icons.Filled.PermIdentity, leadIconDesc = "Name icon")
     Spacer(modifier = Modifier
         .fillMaxWidth(1f)
         .height(15.dp))
-    InputField(label = "Enter age", textState = ageState, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number))
+    InputField(label = "Enter age", textState = ageState, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number), leadIcon = Icons.Filled.CalendarToday, leadIconDesc = "Age icon")
     Spacer(modifier = Modifier
         .fillMaxWidth(1f)
         .height(15.dp))
@@ -94,7 +92,7 @@ fun CreateUserInputs(viewModel: AuthViewModel){
     Spacer(modifier = Modifier
         .fillMaxWidth(1f)
         .height(15.dp))
-    InputField(label = "Enter phone number", textState = phoneState , keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone))
+    InputField(label = "Enter phone number", textState = phoneState , keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone), leadIcon = Icons.Filled.Phone, leadIconDesc = "Phone icon")
     Spacer(modifier = Modifier
         .fillMaxWidth(1f)
         .height(15.dp))

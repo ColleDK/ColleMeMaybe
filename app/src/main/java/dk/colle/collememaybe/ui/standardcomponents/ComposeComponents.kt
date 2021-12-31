@@ -2,15 +2,15 @@ package dk.colle.collememaybe.ui.standardcomponents
 import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -18,6 +18,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInteropFilter
@@ -28,15 +29,20 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dk.colle.collememaybe.ui.auth.InputTextState
-import dk.colle.collememaybe.ui.theme.buttonColor
-import dk.colle.collememaybe.ui.theme.textColor
-import dk.colle.collememaybe.ui.theme.inputTextBackground
-import dk.colle.collememaybe.ui.theme.inputTextText
+import dk.colle.collememaybe.ui.theme.*
 
 @Composable
-fun HeaderText(title: String, widthSize: Float = 1f, color: Color=MaterialTheme.colors.textColor, fontSize: Int=20, maxLines: Int = 1, textAlign: TextAlign = TextAlign.Center){
+fun HeaderText(
+    title: String,
+    widthSize: Float = 1f,
+    color: Color=MaterialTheme.colors.textColor,
+    fontSize: Int=20,
+    maxLines: Int = 1,
+    textAlign: TextAlign = TextAlign.Center
+){
     Text(text = title,
         modifier = Modifier
             .fillMaxWidth(widthSize)
@@ -53,14 +59,41 @@ fun HeaderText(title: String, widthSize: Float = 1f, color: Color=MaterialTheme.
 
 
 @Composable
-fun InputField(initialText: String="", textState: InputTextState = remember{InputTextState()}, label: String = "Enter text", widthSize: Float = 1f, backgroundColor: Color=MaterialTheme.colors.inputTextBackground, textColor: Color = MaterialTheme.colors.inputTextText, fontSize: Int=12, maxLines: Int = 1, textAlign: TextAlign = TextAlign.Left, bold: Boolean = false, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), leadIconClick: () -> Unit = {}, leadIcon: ImageVector? = null, leadIconDesc: String = "" ){
+fun InputField(
+    textState: InputTextState = remember{InputTextState()}, 
+    label: String = "Enter text", 
+    widthSize: Float = 0.7f,
+    backgroundColor: Color=MaterialTheme.colors.inputTextBackground, 
+    textColor: Color = MaterialTheme.colors.inputTextText, 
+    fontSize: Int=12, 
+    maxLines: Int = 2,
+    textAlign: TextAlign = TextAlign.Left, 
+    bold: Boolean = false, 
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), 
+    leadIconClick: () -> Unit = {}, 
+    leadIcon: ImageVector? = null, 
+    leadIconDesc: String = "",
+    enableErrorIcon: Boolean = false
+){
 //    var input by remember { mutableStateOf(initialText) }
     TextField(
-        value = initialText,
-        onValueChange = {textState.text = it},
+        value = textState.text,
+        onValueChange = {textState.text = it },
         modifier = Modifier
             .fillMaxWidth(widthSize)
             .wrapContentHeight(align = CenterVertically)
+            .border(
+                BorderStroke(
+                    width = 4.dp,
+                    brush = Brush.horizontalGradient(
+                        listOf(
+                            Purple200,
+                            Purple500
+                        )
+                    )
+                ),
+                shape = CircleShape
+            )
             .clip(CircleShape),
         label = { Text(text = label)},
         colors = TextFieldDefaults.textFieldColors(
@@ -84,13 +117,33 @@ fun InputField(initialText: String="", textState: InputTextState = remember{Inpu
                 }
             }
         },
-        visualTransformation = if (leadIcon == Icons.Filled.Visibility) PasswordVisualTransformation() else VisualTransformation.None
+        visualTransformation = if (leadIcon == Icons.Filled.Visibility) PasswordVisualTransformation() else VisualTransformation.None,
+        trailingIcon = {
+            if (enableErrorIcon) {
+                IconButton(onClick = { /*TODO*/ }) {
+                    Icon(
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "Input error"
+                    )
+                }
+            }
+        }
     )
 }
 
 @ExperimentalComposeUiApi
 @Composable
-fun AnimatedButton(buttonText: String, onClick: () -> Unit, scale1: Float = .8f, scale2: Float = 1f, buttonColor: Color = MaterialTheme.colors.buttonColor, textColor: Color = MaterialTheme.colors.textColor, textAlign: TextAlign = TextAlign.Center, maxLines: Int = 1, fontSize: Int = 12){
+fun AnimatedButton(
+    buttonText: String,
+    onClick: () -> Unit,
+    scale1: Float = .8f,
+    scale2: Float = 1f,
+    buttonColor: Color = MaterialTheme.colors.buttonColor,
+    textColor: Color = MaterialTheme.colors.textColor,
+    textAlign: TextAlign = TextAlign.Center,
+    maxLines: Int = 1,
+    fontSize: Int = 12
+){
     var clicked by remember {
         mutableStateOf(false)
     }
@@ -115,7 +168,19 @@ fun AnimatedButton(buttonText: String, onClick: () -> Unit, scale1: Float = .8f,
                         }
                     }
                     true
-                },
+                }
+                .border(
+                    BorderStroke(
+                        width = 4.dp,
+                        brush = Brush.horizontalGradient(
+                            listOf(
+                                Purple200,
+                                Purple500
+                            )
+                        )
+                    ),
+                    shape = RoundedCornerShape(25)
+                ),
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = buttonColor
                 ))
