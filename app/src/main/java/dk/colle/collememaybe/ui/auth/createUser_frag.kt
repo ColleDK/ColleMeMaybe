@@ -6,6 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -65,6 +70,10 @@ fun CreateUserInputs(viewModel: AuthViewModel){
         InputTextState()
     }
 
+    val passwordClickState = remember {
+        mutableStateOf(false)
+    }
+
     val phoneState = remember {
         InputTextState()
     }
@@ -77,11 +86,11 @@ fun CreateUserInputs(viewModel: AuthViewModel){
     Spacer(modifier = Modifier
         .fillMaxWidth(1f)
         .height(15.dp))
-    InputField(label = "Enter email", textState = emailState , keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email))
+    InputField(label = "Enter email", textState = emailState , keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email), leadIcon = Icons.Filled.Email, leadIconDesc = "Email icon")
     Spacer(modifier = Modifier
         .fillMaxWidth(1f)
         .height(15.dp))
-    InputField(label = "Enter password", textState = passwordState , keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password))
+    InputField(label = "Enter password", textState = passwordState , keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password), leadIcon = if (passwordClickState.value) Icons.Filled.Visibility else Icons.Filled.VisibilityOff, leadIconDesc = "Password lock", leadIconClick = {passwordClickState.value = !passwordClickState.value})
     Spacer(modifier = Modifier
         .fillMaxWidth(1f)
         .height(15.dp))

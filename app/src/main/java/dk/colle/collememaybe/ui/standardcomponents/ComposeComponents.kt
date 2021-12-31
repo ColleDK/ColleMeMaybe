@@ -6,6 +6,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -14,10 +19,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
@@ -45,10 +53,10 @@ fun HeaderText(title: String, widthSize: Float = 1f, color: Color=MaterialTheme.
 
 
 @Composable
-fun InputField(initialText: String="", textState: InputTextState = remember{InputTextState()}, label: String = "Enter text", widthSize: Float = 1f, backgroundColor: Color=MaterialTheme.colors.inputTextBackground, textColor: Color = MaterialTheme.colors.inputTextText, fontSize: Int=12, maxLines: Int = 1, textAlign: TextAlign = TextAlign.Center, bold: Boolean = false, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)){
+fun InputField(initialText: String="", textState: InputTextState = remember{InputTextState()}, label: String = "Enter text", widthSize: Float = 1f, backgroundColor: Color=MaterialTheme.colors.inputTextBackground, textColor: Color = MaterialTheme.colors.inputTextText, fontSize: Int=12, maxLines: Int = 1, textAlign: TextAlign = TextAlign.Left, bold: Boolean = false, keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), leadIconClick: () -> Unit = {}, leadIcon: ImageVector? = null, leadIconDesc: String = "" ){
 //    var input by remember { mutableStateOf(initialText) }
     TextField(
-        value = textState.text,
+        value = initialText,
         onValueChange = {textState.text = it},
         modifier = Modifier
             .fillMaxWidth(widthSize)
@@ -65,7 +73,18 @@ fun InputField(initialText: String="", textState: InputTextState = remember{Inpu
             textAlign = textAlign,
             fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal
         ),
-        keyboardOptions = keyboardOptions
+        keyboardOptions = keyboardOptions,
+        leadingIcon = {
+            if (leadIcon != null) {
+                IconButton(onClick = { leadIconClick() }) {
+                    Icon(
+                        imageVector = leadIcon,
+                        contentDescription = leadIconDesc
+                    )
+                }
+            }
+        },
+        visualTransformation = if (leadIcon == Icons.Filled.Visibility) PasswordVisualTransformation() else VisualTransformation.None
     )
 }
 

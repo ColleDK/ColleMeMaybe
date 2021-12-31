@@ -58,7 +58,7 @@ val Colors.inputTextBackground: Color
 
 @get:Composable
 val Colors.inputTextText: Color
-    get() = Color(0xFF9FA8DA)
+    get() = Color(0xFFB39DDB)
 
 @get:Composable
 val Colors.buttonColor: Color
