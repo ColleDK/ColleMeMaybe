@@ -1,6 +1,7 @@
 package dk.colle.collememaybe.ui.auth
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
+import dk.colle.collememaybe.ui.standardcomponents.AlertBox
 import dk.colle.collememaybe.ui.standardcomponents.AnimatedButton
 import dk.colle.collememaybe.ui.standardcomponents.InputField
 import dk.colle.collememaybe.viewmodel.AuthViewModel
@@ -41,6 +43,7 @@ fun CreateUserScreen(navController: NavController, viewModel: AuthViewModel){
     Column(Modifier.fillMaxSize(1f), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
         CreateUserHeader()
         CreateUserInputs(viewModel = viewModel)
+        ObserveAlertCreate(viewModel = viewModel)
     }
 }
 
@@ -99,6 +102,22 @@ fun CreateUserInputs(viewModel: AuthViewModel){
     AnimatedButton(buttonText = "Confirm", onClick = { viewModel.checkInputs(name = nameState.text, age = ageState.text, email = emailState.text, password = passwordState.text, phoneNumber = phoneState.text) })
 }
 
+@ExperimentalComposeUiApi
+@Composable
+fun ObserveAlertCreate(viewModel: AuthViewModel){
+    // Dismissing the dialog
+    val openDialog = remember { mutableStateOf(true)}
+    // Observable state for the error handling
+    val error = viewModel.events.collectAsState(initial = null)
+
+    // Reset the dialog value when
+    openDialog.value = true
+
+    // Pass the error to the alert box
+    error.value?.message?.let { AlertBox(status = error.value!!.status, message = it, openValue = {openDialog.value}, onDismiss = {
+        openDialog.value = false
+    }) }
+}
 
 
 class InputTextState(){

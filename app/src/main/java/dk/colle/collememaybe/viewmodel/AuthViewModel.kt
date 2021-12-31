@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import javax.inject.Inject
@@ -33,19 +34,9 @@ class AuthViewModel @Inject constructor(
     val events = _events.receiveAsFlow()
 
 
-    fun createUser(email: String, password: String) = viewModelScope.launch {
-        when {
-            email.isEmpty() -> {
-                _events.send(ResultCommand("Email cannot be empty", ResultCommand.Status.ERROR))
-            }
-            password.isEmpty() -> {
-                _events.send(ResultCommand("Password cannot be empty", ResultCommand.Status.ERROR))
-            }
-            else -> {
-                Log.d(TAG, "Signing up the user")
-                signUpUser(email, password)
-            }
-        }
+    private fun createUser(name: String, age: String, email: String, password: String, phoneNumber: String) = viewModelScope.launch {
+        Log.d(TAG, "Signing up the user")
+        signUpUser(email, password)
     }
 
     private fun signUpUser(email: String, password: String) = viewModelScope.launch {
@@ -109,9 +100,50 @@ class AuthViewModel @Inject constructor(
         }
     }
 
+    fun checkInputs(name: String, age: String, email: String, password: String, phoneNumber: String) = viewModelScope.launch {
+        _events.send(ResultCommand("Creating user", ResultCommand.Status.LOADING))
+        // check empty input
+        var isError = false
+        when {
+            name.isEmpty() -> {
+                _events.send(ResultCommand("Name cannot be empty", ResultCommand.Status.ERROR))
+                isError = true
+            }
+            age.isEmpty() -> {
+                _events.send(ResultCommand("Age cannot be empty", ResultCommand.Status.ERROR))
+                isError = true
+            }
+            email.isEmpty() -> {
+                _events.send(ResultCommand("Email cannot be empty", ResultCommand.Status.ERROR))
+                isError = true
+            }
+            password.isEmpty() -> {
+                _events.send(ResultCommand("Password cannot be empty", ResultCommand.Status.ERROR))
+                isError = true
+            }
+            phoneNumber.isEmpty() -> {
+                _events.send(
+                    ResultCommand(
+                        "Phone number cannot be empty",
+                        ResultCommand.Status.ERROR
+                    )
+                )
+                isError = true
+            }
+        }
+        // if empty we break the job
+        if (isError) viewModelScope.coroutineContext.job.cancel()
 
-    fun checkInputs(name: String, age: String, email: String, password: String, phoneNumber: String ){
-        Log.d(TAG, "Checking inputs for $name, $age, $email, $password, $phoneNumber")
+        try {
+            // Create error if the age is not plausible
+            if (age.toInt() < 0 || age.toInt() > 100) {
+                _events.send(ResultCommand("Age is not in range (0 - 100)", ResultCommand.Status.ERROR))
+            }
+
+        } catch (e: Exception) {
+            Log.d(TAG, e.message.toString())
+            _events.send(ResultCommand("Age or phone number is not exclusively numbers", ResultCommand.Status.ERROR))
+        }
     }
 
 
