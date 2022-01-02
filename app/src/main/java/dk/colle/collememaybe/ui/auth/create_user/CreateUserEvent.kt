@@ -6,6 +6,7 @@ sealed class CreateUserEvent{
     data class OnEditEmail(val email: String) : CreateUserEvent()
     data class OnEditPassword(val password: String) : CreateUserEvent()
     data class OnEditPhoneNumber(val phoneNumber: String) : CreateUserEvent()
+    object OnGoToLoginClicked : CreateUserEvent()
     object ToggleShowPassword : CreateUserEvent()
     object OnCreateUser: CreateUserEvent()
 }

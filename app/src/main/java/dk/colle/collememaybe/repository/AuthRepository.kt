@@ -1,7 +1,11 @@
 package dk.colle.collememaybe.repository
 
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
 import dk.colle.collememaybe.repository.firebase.BaseAuthenticator
+import java.lang.Exception
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
@@ -11,20 +15,34 @@ class AuthRepository @Inject constructor(
         email: String,
         password: String
     ) : FirebaseUser? {
-        return authenticator.signInWithEmailAndPassword(
-            email = email,
-            password = password
-        )
+        try {
+            return authenticator.signInWithEmailAndPassword(
+                email = email,
+                password = password
+            )
+        } catch (e: FirebaseAuthWeakPasswordException){ // Bad password
+            throw e
+        } catch (e: FirebaseAuthUserCollisionException){ // User already exists
+            throw e
+        } catch (e: Exception){
+            throw e
+        }
     }
 
     override suspend fun signUpWithEmailPassword(
         email: String,
         password: String
     ) : FirebaseUser? {
-        return authenticator.signUpWithEmailAndPassword(
-            email = email,
-            password = password
-        )
+        try {
+            return authenticator.signUpWithEmailAndPassword(
+                email = email,
+                password = password
+            )
+        } catch (e : FirebaseAuthInvalidCredentialsException){ // Email or password incorrect
+            throw e
+        } catch (e: Exception) {
+            throw e
+        }
     }
 
     override fun signOut(): FirebaseUser? {

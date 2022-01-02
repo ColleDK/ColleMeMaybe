@@ -5,6 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.colle.collememaybe.repository.BaseAuthRepository
 import dk.colle.collememaybe.util.Routes
@@ -51,11 +54,33 @@ class CreateUserViewModel @Inject constructor(
 
     private fun signUpUser(email: String, password: String) = viewModelScope.launch {
         try {
-            val firebaseUser =
-                repository.signUpWithEmailPassword(email = email, password = password)
+            repository.signUpWithEmailPassword(email = email, password = password)
+            sendUiEvent(UiEvent.Navigate(Routes.START_SCREEN))
         } catch (e: Exception) {
-            val error = e.toString().split(":").toTypedArray()
-            Log.d(TAG, "Create user: ${error[1]}")
+            when (e) {
+                is FirebaseAuthUserCollisionException -> {
+                    val error = e.toString().split(":").toTypedArray()
+                    Log.d(TAG, "Create user: ${error[1]}")
+                    sendUiEvent(
+                        UiEvent.ShowSnackbar(
+                            message = "E-mail is already used! Try to login instead",
+                            action = "Go to login screen"
+                        )
+                    )
+                    confirmButtonClickable.value = true
+                }
+                is FirebaseAuthWeakPasswordException -> {
+                    val error = e.toString().split(":").toTypedArray()
+                    Log.d(TAG, "Create user: ${error[1]}")
+                    sendUiEvent(UiEvent.ShowSnackbar(message = "Password is too weak"))
+                    confirmButtonClickable.value = true
+                }
+                else -> {
+                    val error = e.toString().split(":").toTypedArray()
+                    Log.d(TAG, "Create user: ${error[1]}")
+                    confirmButtonClickable.value = true
+                }
+            }
         }
     }
 
@@ -104,7 +129,6 @@ class CreateUserViewModel @Inject constructor(
                         email = email.value,
                         password = password.value
                     )
-                    sendUiEvent(UiEvent.Navigate(Routes.START_SCREEN))
                 } else {
                     sendUiEvent(
                         UiEvent.ShowSnackbar(
@@ -117,6 +141,11 @@ class CreateUserViewModel @Inject constructor(
             is CreateUserEvent.ToggleShowPassword -> {
                 showPasswordState.value = !showPasswordState.value
             }
+            is CreateUserEvent.OnGoToLoginClicked -> {
+                sendUiEvent(UiEvent.Navigate(
+                    route = Routes.LOGIN_USER_SCREEN
+                ))
+            }
         }
     }
 
@@ -126,6 +155,4 @@ class CreateUserViewModel @Inject constructor(
             _uiEvent.send(uiEvent)
         }
     }
-
-
 }
