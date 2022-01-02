@@ -1,4 +1,4 @@
-package dk.colle.collememaybe.viewmodel
+package dk.colle.collememaybe.ui.auth.create_user
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.colle.collememaybe.repository.BaseAuthRepository
-import dk.colle.collememaybe.ui.auth.create_user.CreateUserEvent
 import dk.colle.collememaybe.util.Routes
 import dk.colle.collememaybe.util.UiEvent
 import kotlinx.coroutines.channels.Channel
@@ -24,9 +23,6 @@ class CreateUserViewModel @Inject constructor(
 
 ) {
     private val TAG = "MainViewModel"
-
-    private var _user = repository.getCurrentUser()
-    val user = _user
 
     private val _uiEvent = Channel<UiEvent>(Channel.BUFFERED)
     val uiEvent = _uiEvent.receiveAsFlow()
@@ -47,24 +43,16 @@ class CreateUserViewModel @Inject constructor(
     var phoneNumber = mutableStateOf("")
         private set
 
-    var showPasswordState = mutableStateOf(true)
+    var showPasswordState = mutableStateOf(false)
         private set
 
     var confirmButtonClickable = mutableStateOf(true)
         private set
 
-    init {
-        sendUiEvent(UiEvent.ShowSnackbar(message = "Test123"))
-    }
-
     private fun signUpUser(email: String, password: String) = viewModelScope.launch {
         try {
             val firebaseUser =
                 repository.signUpWithEmailPassword(email = email, password = password)
-            firebaseUser?.let {
-                _user = it
-            }
-
         } catch (e: Exception) {
             val error = e.toString().split(":").toTypedArray()
             Log.d(TAG, "Create user: ${error[1]}")

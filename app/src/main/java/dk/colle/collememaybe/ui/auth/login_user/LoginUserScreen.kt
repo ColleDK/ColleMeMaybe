@@ -7,7 +7,6 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import dk.colle.collememaybe.ui.standardcomponents.AnimatedButton
 import dk.colle.collememaybe.ui.standardcomponents.HeaderText
 import dk.colle.collememaybe.util.Routes
@@ -44,7 +43,7 @@ fun LoginMiddle(onNavigate: (UiEvent.Navigate) -> Unit) {
         Spacer(modifier = Modifier
             .fillMaxWidth(1f)
             .height(15.dp))
-        AnimatedButton(buttonText = "Create account", onClick = { onNavigate(UiEvent.Navigate(Routes.CREATE_USER)) })
+        AnimatedButton(buttonText = "Create account", onClick = { onNavigate(UiEvent.Navigate(Routes.CREATE_USER_SCREEN)) })
         Spacer(modifier = Modifier
             .fillMaxWidth(1f)
             .height(15.dp))

@@ -1,4 +1,4 @@
-package dk.colle.collememaybe
+package dk.colle.collememaybe.util
 
 class ResultCommand(
     val message: String,

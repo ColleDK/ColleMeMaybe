@@ -9,22 +9,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ColleMeMaybe">
-        <activity
-            android:name=".ui.auth.createUser_frag"
-            android:exported="false"
-            android:label="@string/title_activity_create_user_frag"
-            android:theme="@style/Theme.ColleMeMaybe.NoActionBar" />
-        <activity
-            android:name=".ui.auth.login_frag"
-            android:exported="false"
-            android:label="@string/title_activity_login_frag"
-            android:theme="@style/Theme.ColleMeMaybe.NoActionBar" />
+        android:theme="@style/Theme.App.Starting">
         <activity
             android:name=".ui.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.ColleMeMaybe.NoActionBar">
+            android:theme="@style/Theme.App.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

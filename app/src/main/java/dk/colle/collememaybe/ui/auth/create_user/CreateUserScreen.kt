@@ -16,7 +16,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import dk.colle.collememaybe.ui.standardcomponents.AnimatedButton
 import dk.colle.collememaybe.ui.standardcomponents.InputField
 import dk.colle.collememaybe.util.UiEvent
-import dk.colle.collememaybe.viewmodel.CreateUserViewModel
 import kotlinx.coroutines.flow.collectLatest
 
 @ExperimentalComposeUiApi
