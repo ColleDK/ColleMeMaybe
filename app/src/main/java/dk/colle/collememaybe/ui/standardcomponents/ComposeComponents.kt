@@ -1,4 +1,5 @@
 package dk.colle.collememaybe.ui.standardcomponents
+
 import android.app.Activity
 import android.util.Log
 import android.view.MotionEvent
@@ -40,19 +41,20 @@ import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import dk.colle.collememaybe.R
 import dk.colle.collememaybe.ResultCommand
-import dk.colle.collememaybe.ui.auth.InputTextState
 import dk.colle.collememaybe.ui.theme.*
+import dk.colle.collememaybe.util.InputTextState
 
 @Composable
 fun HeaderText(
     title: String,
     widthSize: Float = 1f,
-    color: Color=MaterialTheme.colors.textColor,
-    fontSize: Int=20,
+    color: Color = MaterialTheme.colors.textColor,
+    fontSize: Int = 20,
     maxLines: Int = 1,
     textAlign: TextAlign = TextAlign.Center
-){
-    Text(text = title,
+) {
+    Text(
+        text = title,
         modifier = Modifier
             .fillMaxWidth(widthSize)
             .wrapContentHeight(align = CenterVertically)
@@ -69,28 +71,30 @@ fun HeaderText(
 
 @Composable
 fun InputField(
-    textState: InputTextState = remember{InputTextState()}, 
-    label: String = "Enter text", 
+    textState: MutableState<String> = remember { mutableStateOf("") },
+    onValueChange: (String) -> Unit = {textState.value = it},
+    label: String = "Enter text",
     widthSize: Float = 0.7f,
-    backgroundColor: Color=MaterialTheme.colors.inputTextBackground, 
-    textColor: Color = MaterialTheme.colors.inputTextText, 
-    fontSize: Int=12, 
+    backgroundColor: Color = MaterialTheme.colors.inputTextBackground,
+    textColor: Color = MaterialTheme.colors.inputTextText,
+    fontSize: Int = 12,
     maxLines: Int = 2,
-    textAlign: TextAlign = TextAlign.Left, 
-    bold: Boolean = false, 
-    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), 
-    leadIconClick: () -> Unit = {}, 
-    leadIcon: ImageVector? = null, 
+    textAlign: TextAlign = TextAlign.Left,
+    bold: Boolean = false,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+    leadIconClick: () -> Unit = {},
+    leadIcon: ImageVector? = null,
     leadIconDesc: String = "",
-    enableErrorIcon: Boolean = false
-){
-//    var input by remember { mutableStateOf(initialText) }
+    enableErrorIcon: Boolean = false,
+    bottomPadding: Int = 15
+) {
     TextField(
-        value = textState.text,
-        onValueChange = {textState.text = it },
+        value = textState.value,
+        onValueChange = { onValueChange(it) },
         modifier = Modifier
             .fillMaxWidth(widthSize)
             .wrapContentHeight(align = CenterVertically)
+            .padding(bottom = bottomPadding.dp)
             .border(
                 BorderStroke(
                     width = 4.dp,
@@ -104,7 +108,7 @@ fun InputField(
                 shape = CircleShape
             )
             .clip(CircleShape),
-        label = { Text(text = label)},
+        label = { Text(text = label) },
         colors = TextFieldDefaults.textFieldColors(
             backgroundColor = backgroundColor,
             textColor = textColor
@@ -151,16 +155,21 @@ fun AnimatedButton(
     textColor: Color = MaterialTheme.colors.textColor,
     textAlign: TextAlign = TextAlign.Center,
     maxLines: Int = 1,
-    fontSize: Int = 12
-){
+    fontSize: Int = 12,
+    isEnabled: () -> Boolean = {true}
+) {
     var clicked by remember {
         mutableStateOf(false)
     }
 
     val scale = animateFloatAsState(targetValue = if (clicked) scale1 else scale2)
 
-    Column(Modifier.fillMaxWidth(1f), verticalArrangement = Arrangement.Center, horizontalAlignment = CenterHorizontally) {
-        Button(onClick = {onClick()},
+    Column(
+        Modifier.fillMaxWidth(1f),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = CenterHorizontally
+    ) {
+        Button(onClick = { onClick() },
             modifier = Modifier
                 .scale(scale = scale.value)
                 .wrapContentWidth(CenterHorizontally)
@@ -169,7 +178,6 @@ fun AnimatedButton(
                     when (it.action) {
                         MotionEvent.ACTION_DOWN -> {
                             clicked = true
-                            Log.d("Button", "button clicked")
                             onClick()
                         }
                         MotionEvent.ACTION_UP -> {
@@ -190,9 +198,11 @@ fun AnimatedButton(
                     ),
                     shape = RoundedCornerShape(25)
                 ),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = buttonColor
-                ))
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = buttonColor
+            ),
+            enabled = isEnabled()
+        )
         {
             Text(
                 text = buttonText,
@@ -217,23 +227,25 @@ fun AlertBox(
     message: String,
     openValue: () -> Boolean,
     onDismiss: () -> Unit
-){
+) {
     // Check if the box needs to be opened
-    if (openValue()){
-        when(status){
+    if (openValue()) {
+        when (status) {
             ResultCommand.Status.SUCCESS -> {
                 val composition by rememberLottieComposition(spec = LottieCompositionSpec.RawRes(R.raw.success))
                 val activity = (LocalContext.current as Activity)
                 AlertDialog(onDismissRequest = {
                     onDismiss()
                     // End the activity when you sold the crypto
-                    activity.finish()},
+                    activity.finish()
+                },
                     properties = DialogProperties(usePlatformDefaultWidth = false),
 
                     title = {
                         Box(
                             contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillMaxWidth(1f)) {
+                            modifier = Modifier.fillMaxWidth(1f)
+                        ) {
                             LottieAnimation(composition, modifier = Modifier.size(200.dp))
                         }
                     }, text = {
@@ -257,9 +269,14 @@ fun AlertBox(
                                     onDismiss()
                                     // End the activity when you sold the crypto
                                     activity.finish()
-                                }, colors = ButtonDefaults.buttonColors(MaterialTheme.colors.buttonColor)
+                                },
+                                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.buttonColor)
                             ) {
-                                Text("Finish", color = Color.Black, style = TextStyle(fontWeight = FontWeight.Bold))
+                                Text(
+                                    "Finish",
+                                    color = Color.Black,
+                                    style = TextStyle(fontWeight = FontWeight.Bold)
+                                )
                             }
                         }
                     },
@@ -277,7 +294,8 @@ fun AlertBox(
                     title = {
                         Box(
                             contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillMaxWidth(1f)) {
+                            modifier = Modifier.fillMaxWidth(1f)
+                        ) {
                             LottieAnimation(composition, modifier = Modifier.size(200.dp))
                         }
                     }, text = {
@@ -299,9 +317,14 @@ fun AlertBox(
                             Button(
                                 onClick = {
                                     onDismiss()
-                                }, colors = ButtonDefaults.buttonColors(MaterialTheme.colors.buttonColor)
+                                },
+                                colors = ButtonDefaults.buttonColors(MaterialTheme.colors.buttonColor)
                             ) {
-                                Text("Dismiss", color = Color.Black, style = TextStyle(fontWeight = FontWeight.Bold))
+                                Text(
+                                    "Dismiss",
+                                    color = Color.Black,
+                                    style = TextStyle(fontWeight = FontWeight.Bold)
+                                )
                             }
                         }
                     },
@@ -310,5 +333,4 @@ fun AlertBox(
             }
         }
     }
-
 }

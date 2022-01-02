@@ -15,25 +15,42 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import dk.colle.collememaybe.ui.auth.CreateUserScreen
-import dk.colle.collememaybe.ui.auth.LoginScreen
+import dk.colle.collememaybe.ui.auth.create_user.CreateUserScreen
+import dk.colle.collememaybe.ui.auth.login_user.LoginScreen
 import dk.colle.collememaybe.ui.standardcomponents.AnimatedButton
-import dk.colle.collememaybe.viewmodel.AuthViewModel
+import dk.colle.collememaybe.util.Routes
+import dk.colle.collememaybe.util.UiEvent
+import dk.colle.collememaybe.viewmodel.CreateUserViewModel
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val authViewModel: AuthViewModel by viewModels()
+    private val createUserViewModel: CreateUserViewModel by viewModels()
 
     @ExperimentalComposeUiApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
-            NavHost(navController = navController, startDestination = "startScreen"){
-                composable("startScreen"){ StartScreen(navController = navController)}
-                composable("loginScreen"){ LoginScreen(navController = navController)}
-                composable("createUserScreen"){ CreateUserScreen(navController = navController, viewModel = authViewModel) }
+            NavHost(navController = navController, startDestination = Routes.START_SCREEN) {
+                composable(route = Routes.START_SCREEN) {
+                    StartScreen(onNavigate = {
+                        navController.navigate(
+                            it.route
+                        )
+                    })
+                }
+                composable(route = Routes.LOGIN_USER) {
+                    LoginScreen(onNavigate = {
+                        navController.navigate(it.route)
+                    })
+                }
+                composable(route = Routes.CREATE_USER) {
+                    CreateUserScreen(
+                        onNavigate = { navController.navigate(it.route) },
+                        viewModel = createUserViewModel
+                    )
+                }
             }
         }
     }
@@ -41,11 +58,11 @@ class MainActivity : ComponentActivity() {
 
 @ExperimentalComposeUiApi
 @Composable
-fun StartScreen(navController: NavController) {
+fun StartScreen(onNavigate: (UiEvent.Navigate) -> Unit) {
     Column(Modifier.fillMaxSize(1f)) {
         AnimatedButton(buttonText = "Go to login screen", onClick = {
             Log.d("button", "navigating to login screen")
-            navController.navigate("loginScreen")
+            onNavigate(UiEvent.Navigate(Routes.LOGIN_USER))
         })
     }
 }
