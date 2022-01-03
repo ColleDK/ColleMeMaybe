@@ -1,14 +1,13 @@
 package dk.colle.collememaybe.ui.splashscreen
 
 import android.annotation.SuppressLint
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dk.colle.collememaybe.repository.BaseAuthRepository
+import dk.colle.collememaybe.repository.auth.BaseAuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

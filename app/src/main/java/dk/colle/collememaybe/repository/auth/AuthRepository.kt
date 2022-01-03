@@ -1,4 +1,4 @@
-package dk.colle.collememaybe.repository
+package dk.colle.collememaybe.repository.auth
 
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException

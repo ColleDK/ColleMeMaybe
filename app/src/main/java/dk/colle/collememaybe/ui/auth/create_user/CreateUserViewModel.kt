@@ -5,11 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dk.colle.collememaybe.repository.BaseAuthRepository
+import dk.colle.collememaybe.repository.auth.BaseAuthRepository
 import dk.colle.collememaybe.util.Routes
 import dk.colle.collememaybe.util.UiEvent
 import kotlinx.coroutines.channels.Channel
