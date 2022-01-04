@@ -7,5 +7,5 @@ sealed class ChatEvent {
     data class OnDeleteMessage(val message: MessageDto) : ChatEvent()
     data class OnLikeMessage(val messageId: String) : ChatEvent()
     data class OnReportMessage(val messageId: String) : ChatEvent()
-//    data class OnReplyMessage(val messageId: String, val message: MessageDto) : ChatEvent()
+    object OnUndo: ChatEvent()
 }

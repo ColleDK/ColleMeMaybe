@@ -1,4 +1,4 @@
-package dk.colle.collememaybe.repository.firebase
+package dk.colle.collememaybe.repository.firebase.chat
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore

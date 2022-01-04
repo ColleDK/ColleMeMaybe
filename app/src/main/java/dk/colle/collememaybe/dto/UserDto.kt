@@ -3,16 +3,10 @@ package dk.colle.collememaybe.dto
 import android.net.Uri
 
 data class UserDto(
+    val userId: String,
     val name: String,
     val age: Int,
-    val description: String,
-    val gender: Gender = Gender.Undefined,
     val email: String,
-    val password: String,
     val phoneNumber: String,
-    val pictures: MutableList<Uri> = mutableListOf()
+    val profilePic: Uri?,
 )
-
-enum class Gender {
-    Male, Female, Undefined
-}

@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.FirebaseUser
-import dk.colle.collememaybe.repository.firebase.BaseAuthenticator
+import dk.colle.collememaybe.repository.firebase.auth.BaseAuthenticator
 import java.lang.Exception
 import javax.inject.Inject
 

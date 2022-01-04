@@ -1,0 +1,86 @@
+package dk.colle.collememaybe.repository.firebase.user
+
+import android.net.Uri
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import dk.colle.collememaybe.dto.UserDto
+import kotlinx.coroutines.tasks.await
+
+class FirebaseUser : BaseFirebaseUser {
+    private val TAG = "FirebaseUser"
+    private var db: FirebaseFirestore = Firebase.firestore
+    private var storageRef = Firebase.storage.reference
+
+    override suspend fun createUser(user: UserDto): UserDto {
+        val newUser = hashMapOf(
+            "userId" to null,
+            "name" to user.name,
+            "age" to user.age,
+            "email" to user.email,
+            "phoneNumber" to user.phoneNumber,
+            "profilePic" to null
+        )
+
+        val result = db.collection("users").add(newUser).await()
+        updateUser(
+            user.copy(
+                userId = result.id,
+                profilePic = user.profilePic?.let { uploadFile(uri = it, userId = result.id) }
+            )
+        )
+        return user
+    }
+
+    override suspend fun updateUser(user: UserDto): UserDto {
+        val updatedUser = hashMapOf(
+            "userId" to user.userId,
+            "name" to user.name,
+            "age" to user.age,
+            "email" to user.email,
+            "phoneNumber" to user.phoneNumber,
+            "profilePic" to user.profilePic
+        )
+
+        val result = db.collection("users").document(user.userId).set(updatedUser).await()
+        return user
+    }
+
+    override suspend fun deleteUser(userId: String) {
+        TODO("Not yet implemented")
+    }
+
+
+    override suspend fun getUser(userId: String): UserDto? {
+        return db.collection("users").document(userId).get().await().toObject(UserDto::class.java)
+    }
+
+    override suspend fun getUsers(userIds: List<String>): List<UserDto> {
+        val result: MutableList<UserDto> = mutableListOf()
+        userIds.forEach { userId ->
+            db.collection("users").document(userId).get().await().toObject(UserDto::class.java)
+                ?.let {
+                    result.add(
+                        it
+                    )
+                }
+        }
+        return result
+
+    }
+
+    override suspend fun getUsersFromServer(serverId: String): List<UserDto>? {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getAllUsers(): List<UserDto>? {
+        TODO("Not yet implemented")
+    }
+
+    private suspend fun uploadFile(uri: Uri, userId: String): Uri? {
+        return storageRef.child(userId).child("profilePic").putFile(uri).await().uploadSessionUri
+
+    }
+
+}

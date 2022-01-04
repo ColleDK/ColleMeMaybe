@@ -1,4 +1,4 @@
-package dk.colle.collememaybe.repository.firebase
+package dk.colle.collememaybe.repository.firebase.auth
 
 import com.google.firebase.auth.FirebaseUser
 

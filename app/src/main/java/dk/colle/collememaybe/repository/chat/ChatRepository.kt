@@ -2,8 +2,8 @@ package dk.colle.collememaybe.repository.chat
 
 import dk.colle.collememaybe.dto.ChatDto
 import dk.colle.collememaybe.dto.MessageDto
-import dk.colle.collememaybe.repository.firebase.BaseAuthenticator
-import dk.colle.collememaybe.repository.firebase.BaseFirebaseChat
+import dk.colle.collememaybe.repository.firebase.auth.BaseAuthenticator
+import dk.colle.collememaybe.repository.firebase.chat.BaseFirebaseChat
 import java.lang.Exception
 import javax.inject.Inject
 

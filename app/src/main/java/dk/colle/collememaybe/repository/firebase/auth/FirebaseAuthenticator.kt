@@ -1,9 +1,10 @@
-package dk.colle.collememaybe.repository.firebase
+package dk.colle.collememaybe.repository.firebase.auth
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import dk.colle.collememaybe.repository.firebase.auth.BaseAuthenticator
 import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthenticator: BaseAuthenticator {
