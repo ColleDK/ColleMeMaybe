@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.hilt.navigation.compose.hiltViewModel
 import dk.colle.collememaybe.ui.standardcomponents.AnimatedButton
+import dk.colle.collememaybe.ui.standardcomponents.DatePickerOwn
+import dk.colle.collememaybe.ui.standardcomponents.HeaderText
 import dk.colle.collememaybe.ui.standardcomponents.InputField
 import dk.colle.collememaybe.util.UiEvent
 import kotlinx.coroutines.flow.collectLatest
@@ -39,7 +41,7 @@ fun CreateUserScreen(
                         message = event.message,
                         actionLabel = event.action
                     )
-                    if (result == SnackbarResult.ActionPerformed){
+                    if (result == SnackbarResult.ActionPerformed) {
                         viewModel.onEvent(CreateUserEvent.OnGoToLoginClicked)
                     }
                 }
@@ -63,6 +65,7 @@ fun CreateUserScreen(
 @ExperimentalComposeUiApi
 @Composable
 fun CreateUserInputs(viewModel: CreateUserViewModel = hiltViewModel()) {
+    HeaderText(title = "Create user")
     InputField(
         label = "Enter name",
         onValueChange = { viewModel.onEvent(CreateUserEvent.OnEditName(name = it)) },
@@ -70,14 +73,11 @@ fun CreateUserInputs(viewModel: CreateUserViewModel = hiltViewModel()) {
         leadIcon = Icons.Filled.PermIdentity,
         leadIconDesc = "Name icon"
     )
-    InputField(
-        label = "Enter age",
-        onValueChange = { viewModel.onEvent(CreateUserEvent.OnEditAge(age = it)) },
-        textState = viewModel.age,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        leadIcon = Icons.Filled.CalendarToday,
-        leadIconDesc = "Age icon"
-    )
+    DatePickerOwn(
+        dateState = viewModel.birthday,
+        onChangeDate = {
+            viewModel.onEvent(CreateUserEvent.OnEditBirthday(birthday = it))
+        })
     InputField(
         label = "Enter email",
         onValueChange = { viewModel.onEvent(CreateUserEvent.OnEditEmail(email = it)) },
@@ -112,7 +112,6 @@ fun CreateUserInputs(viewModel: CreateUserViewModel = hiltViewModel()) {
             viewModel.onEvent(
                 CreateUserEvent.OnCreateUser
             )
-        },
-        isEnabled = { viewModel.confirmButtonClickable.value }
+        }
     )
 }

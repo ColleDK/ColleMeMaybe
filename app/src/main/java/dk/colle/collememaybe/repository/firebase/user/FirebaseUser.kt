@@ -15,12 +15,12 @@ class FirebaseUser : BaseFirebaseUser {
 
     override suspend fun createUser(user: UserDto): UserDto {
         val newUser = hashMapOf(
-            "userId" to null,
+            "userId" to "",
             "name" to user.name,
-            "age" to user.age,
+            "birthday" to user.birthday,
             "email" to user.email,
             "phoneNumber" to user.phoneNumber,
-            "profilePic" to null
+            "profilePic" to ""
         )
 
         val result = db.collection("users").add(newUser).await()
@@ -37,7 +37,7 @@ class FirebaseUser : BaseFirebaseUser {
         val updatedUser = hashMapOf(
             "userId" to user.userId,
             "name" to user.name,
-            "age" to user.age,
+            "birthday" to user.birthday,
             "email" to user.email,
             "phoneNumber" to user.phoneNumber,
             "profilePic" to user.profilePic

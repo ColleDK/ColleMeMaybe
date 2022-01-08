@@ -40,7 +40,7 @@ fun AnimatedButton(
     textAlign: TextAlign = TextAlign.Center,
     maxLines: Int = 1,
     fontSize: Int = 12,
-    isEnabled: () -> Boolean = {true}
+    isEnabled: () -> Boolean = { true }
 ) {
     var clicked by remember {
         mutableStateOf(false)
@@ -49,7 +49,9 @@ fun AnimatedButton(
     val scale = animateFloatAsState(targetValue = if (clicked) scale1 else scale2)
 
     Column(
-        Modifier.fillMaxWidth(1f),
+        Modifier
+            .fillMaxWidth(1f)
+            .padding(bottom = 15.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

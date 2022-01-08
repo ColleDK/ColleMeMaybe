@@ -7,8 +7,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dk.colle.collememaybe.dto.UserDto
 import dk.colle.collememaybe.repository.auth.BaseAuthRepository
+import dk.colle.collememaybe.repository.firebase.user.BaseFirebaseUser
+import dk.colle.collememaybe.util.CurrentDateFormatter
 import dk.colle.collememaybe.util.Routes
 import dk.colle.collememaybe.util.UiEvent
 import kotlinx.coroutines.channels.Channel
@@ -20,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class CreateUserViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
-    private val repository: BaseAuthRepository
+    private val repository: BaseAuthRepository,
+    private val firebaseUser: BaseFirebaseUser
 ) : ViewModel(
 
 ) {
@@ -33,7 +38,7 @@ class CreateUserViewModel @Inject constructor(
     var name = mutableStateOf("")
         private set
 
-    var age = mutableStateOf("")
+    var birthday = mutableStateOf("")
         private set
 
     var email = mutableStateOf("")
@@ -51,10 +56,32 @@ class CreateUserViewModel @Inject constructor(
     var confirmButtonClickable = mutableStateOf(true)
         private set
 
-    private fun signUpUser(email: String, password: String) = viewModelScope.launch {
+    private fun signUpUser(
+        name: String,
+        birthday: String,
+        email: String,
+        password: String,
+        phoneNumber: String
+    ) = viewModelScope.launch {
         try {
-            repository.signUpWithEmailPassword(email = email, password = password)
-            sendUiEvent(UiEvent.Navigate(Routes.START_SCREEN))
+            val result = repository.signUpWithEmailPassword(email = email, password = password)
+            if (result != null) {
+                CurrentDateFormatter.DATEFORMATTER.parse(birthday)?.let {
+                    firebaseUser.createUser(
+                        UserDto(
+                            userId = "",
+                            name = name,
+                            birthday = it,
+                            email = email,
+                            phoneNumber = phoneNumber,
+                            profilePic = null
+                        )
+                    )
+                    sendUiEvent(UiEvent.Navigate(Routes.START_SCREEN))
+                }
+            } else {
+                sendUiEvent(UiEvent.ShowSnackbar(message = "An unexpected error has occured please try again"))
+            }
         } catch (e: Exception) {
             when (e) {
                 is FirebaseAuthUserCollisionException -> {
@@ -85,12 +112,12 @@ class CreateUserViewModel @Inject constructor(
 
     private fun isNotEmptyInput(
         name: String,
-        age: String,
+        birthday: String,
         email: String,
         password: String,
         phoneNumber: String
     ): Boolean {
-        return (name.isNotBlank() && age.isNotBlank() && email.isNotBlank() && password.isNotBlank() && phoneNumber.isNotBlank())
+        return (name.isNotBlank() && birthday.isNotBlank() && email.isNotBlank() && password.isNotBlank() && phoneNumber.isNotBlank())
     }
 
 
@@ -99,8 +126,8 @@ class CreateUserViewModel @Inject constructor(
             is CreateUserEvent.OnEditName -> {
                 name.value = event.name
             }
-            is CreateUserEvent.OnEditAge -> {
-                age.value = event.age
+            is CreateUserEvent.OnEditBirthday -> {
+                birthday.value = event.birthday
             }
             is CreateUserEvent.OnEditEmail -> {
                 email.value = event.email
@@ -117,7 +144,7 @@ class CreateUserViewModel @Inject constructor(
                 Log.d(TAG, "Event gotten with $event")
                 if (isNotEmptyInput(
                         name = name.value,
-                        age = age.value,
+                        birthday = birthday.value,
                         email = email.value,
                         password = password.value,
                         phoneNumber = phoneNumber.value
@@ -125,8 +152,11 @@ class CreateUserViewModel @Inject constructor(
                 ) {
                     Log.d(TAG, "Creating user")
                     signUpUser(
+                        name = name.value,
+                        birthday = birthday.value,
                         email = email.value,
-                        password = password.value
+                        password = password.value,
+                        phoneNumber = phoneNumber.value
                     )
                 } else {
                     sendUiEvent(
@@ -141,9 +171,11 @@ class CreateUserViewModel @Inject constructor(
                 showPasswordState.value = !showPasswordState.value
             }
             is CreateUserEvent.OnGoToLoginClicked -> {
-                sendUiEvent(UiEvent.Navigate(
-                    route = Routes.LOGIN_USER_SCREEN
-                ))
+                sendUiEvent(
+                    UiEvent.Navigate(
+                        route = Routes.LOGIN_USER_SCREEN
+                    )
+                )
             }
         }
     }

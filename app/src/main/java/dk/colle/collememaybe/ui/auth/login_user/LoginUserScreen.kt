@@ -116,11 +116,6 @@ fun LoginMiddle(
         AnimatedButton(
             buttonText = "Log in",
             onClick = { viewModel.onEvent(LoginUserEvent.OnLoginUser) })
-        Spacer(
-            modifier = Modifier
-                .fillMaxWidth(1f)
-                .height(15.dp)
-        )
         AnimatedButton(
             buttonText = "Create account",
             onClick = { onNavigate(UiEvent.Navigate(Routes.CREATE_USER_SCREEN)) })
