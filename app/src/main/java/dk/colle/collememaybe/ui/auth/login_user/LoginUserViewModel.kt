@@ -45,7 +45,8 @@ class LoginUserViewModel @Inject constructor(
                     val error = e.toString().split(":").toTypedArray()
                     Log.d(TAG, "Create user: ${error[1]}")
                     sendUiEvent(UiEvent.ShowSnackbar(
-                        message = "Invalid credentials! Check for any errors"
+                        message = "Invalid credentials! Check for any errors",
+                        action = "Reset password"
                     ))
                 }
                 else -> {
@@ -53,6 +54,16 @@ class LoginUserViewModel @Inject constructor(
                     Log.d(TAG, "Create user: ${error[1]}")
                 }
             }
+        }
+    }
+
+    private fun sendPasswordReset(email: String) = viewModelScope.launch {
+        try {
+            repository.sendResetPassword(email = email)
+        }catch (e: Exception){
+            val error = e.toString().split(":").toTypedArray()
+            Log.d(TAG, "Create user: ${error[1]}")
+            sendUiEvent(UiEvent.ShowSnackbar(message = error[1]))
         }
     }
 
@@ -84,6 +95,9 @@ class LoginUserViewModel @Inject constructor(
             }
             is LoginUserEvent.ToggleShowPassword -> {
                 showPasswordState.value = !showPasswordState.value
+            }
+            is LoginUserEvent.OnClickResetPassword -> {
+                sendPasswordReset(email = event.email)
             }
         }
     }

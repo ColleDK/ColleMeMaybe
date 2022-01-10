@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavType
@@ -16,9 +17,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import dk.colle.collememaybe.ui.auth.create_user.CreateUserScreen
 import dk.colle.collememaybe.ui.auth.login_user.LoginScreen
 import dk.colle.collememaybe.ui.chat.ChatScreen
-import dk.colle.collememaybe.util.Routes
 import dk.colle.collememaybe.ui.splashscreen.SplashScreenViewModel
 import dk.colle.collememaybe.ui.startscreen.StartScreen
+import dk.colle.collememaybe.util.Routes
 
 
 @AndroidEntryPoint
@@ -37,13 +38,13 @@ class MainActivity : ComponentActivity() {
         setContent {
             Log.d(
                 TAG,
-                "Setting compose content with current user email:${splashScreenViewModel.user.value?.email}, uid:${splashScreenViewModel.user.value?.uid}"
+                "Setting compose content with current user email:${splashScreenViewModel.user.collectAsState().value?.email}, uid:${splashScreenViewModel.user.collectAsState().value?.uid}"
             )
             val navController = rememberNavController()
             // If the user is not logged in then we want to direct the user to the login screen else direct them to the normal start screen
             NavHost(
                 navController = navController,
-                startDestination = if (splashScreenViewModel.user.value == null) Routes.LOGIN_USER_SCREEN else Routes.START_SCREEN
+                startDestination = if (splashScreenViewModel.user.collectAsState().value == null) Routes.LOGIN_USER_SCREEN else Routes.START_SCREEN
             ) {
 
                 // Screen that shows list of servers, friends and chats
@@ -90,18 +91,23 @@ class MainActivity : ComponentActivity() {
                 }
 
                 // Screen for specific chat
-                composable(route = Routes.CHAT_SCREEN + "?chatId={chatId}",
+                composable(route = Routes.CHAT_SCREEN + "/{chatId}",
                     arguments = listOf(
                         navArgument(name = "chatId") {
                             type = NavType.StringType
-                            defaultValue = ""
                         }
-                    )) {
-                    ChatScreen(onNavigate = {
-                        navController.navigate(
-                            it.route
+                    )) { backStackEntry ->
+                    val chatId = backStackEntry.arguments?.getString("chatId")
+                    Log.d(TAG, "Navigating to chat screen with id $chatId")
+                    chatId?.let {
+                        ChatScreen(
+                            onNavigate = {
+                                navController.navigate(
+                                    it.route
+                                )
+                            }
                         )
-                    })
+                    }
                 }
             }
         }

@@ -12,8 +12,12 @@ import dk.colle.collememaybe.repository.firebase.auth.BaseAuthenticator
 import dk.colle.collememaybe.repository.firebase.auth.FirebaseAuthenticator
 import dk.colle.collememaybe.repository.firebase.chat.BaseFirebaseChat
 import dk.colle.collememaybe.repository.firebase.chat.FirebaseChat
+import dk.colle.collememaybe.repository.firebase.message.BaseFirebaseMessage
+import dk.colle.collememaybe.repository.firebase.message.FirebaseMessage
 import dk.colle.collememaybe.repository.firebase.user.BaseFirebaseUser
 import dk.colle.collememaybe.repository.firebase.user.FirebaseUser
+import dk.colle.collememaybe.repository.message.BaseMessageRepository
+import dk.colle.collememaybe.repository.message.MessageRepository
 import dk.colle.collememaybe.repository.user.BaseUserRepository
 import dk.colle.collememaybe.repository.user.UserRepository
 import javax.inject.Singleton
@@ -22,6 +26,9 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    /**
+     * Auth
+     */
     @Provides
     @Singleton
     fun provideBaseAuthenticator(): BaseAuthenticator {
@@ -34,6 +41,10 @@ object AppModule {
         return AuthRepository(provideBaseAuthenticator())
     }
 
+
+    /**
+     * Chat
+     */
     @Provides
     @Singleton
     fun provideBaseFirebaseChat(): BaseFirebaseChat {
@@ -45,10 +56,14 @@ object AppModule {
     fun provideChatRepository(): BaseChatRepository {
         return ChatRepository(
             authenticator = provideBaseAuthenticator(),
-            firebaseChat = provideBaseFirebaseChat()
+            firebaseChat = provideBaseFirebaseChat(),
+            firebaseMessage = provideBaseFirebaseMessage()
         )
     }
 
+    /**
+     * User
+     */
     @Provides
     @Singleton
     fun provideBaseFirebaseUser(): BaseFirebaseUser {
@@ -62,4 +77,20 @@ object AppModule {
             firebaseUser = provideBaseFirebaseUser()
         )
     }
+
+    /**
+     * Message
+     */
+    @Singleton
+    @Provides
+    fun provideBaseFirebaseMessage(): BaseFirebaseMessage {
+        return FirebaseMessage()
+    }
+
+    @Singleton
+    @Provides
+    fun provideMessageRepository(): BaseMessageRepository {
+        return MessageRepository()
+    }
+
 }

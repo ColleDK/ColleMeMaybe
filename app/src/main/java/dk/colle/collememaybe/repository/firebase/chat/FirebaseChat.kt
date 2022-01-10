@@ -13,8 +13,9 @@ class FirebaseChat : BaseFirebaseChat {
 
     override suspend fun getChat(userId: String, chatId: String): ChatDto? {
         val user = db.collection("users").document(userId).get().await()
-        user.data?.forEach {
-            Log.d(TAG, "User data is ${it.toString()}")
+        if ((user.data?.get("chatIds") as List<*>).contains(chatId)){
+            Log.d(TAG, "User is part of chat with chatId $chatId!")
+            return db.collection("chats").document(chatId).get().await().toObject(ChatDto::class.java)
         }
         return null
     }
@@ -26,13 +27,13 @@ class FirebaseChat : BaseFirebaseChat {
     }
 
     override suspend fun createChat(newChat: ChatDto): String {
-        val messageIds: MutableList<String> = mutableListOf()
-        newChat.messages.forEach { messageIds.add(it.messageId) }
+//        val messageIds: MutableList<String> = mutableListOf()
+//        newChat.messages.forEach { messageIds.add(it.messageId) }
 
         val chat = hashMapOf(
             "chatId" to null,
             "users" to newChat.users,
-            "messageIds" to messageIds
+            "messageIds" to newChat.messages
         )
 
         val result = db.collection("chats").add(chat).await()

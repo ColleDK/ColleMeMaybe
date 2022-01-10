@@ -15,22 +15,23 @@ class FirebaseUser : BaseFirebaseUser {
 
     override suspend fun createUser(user: UserDto): UserDto {
         val newUser = hashMapOf(
-            "userId" to "",
+            "userId" to user.userId,
             "name" to user.name,
             "birthday" to user.birthday,
             "email" to user.email,
             "phoneNumber" to user.phoneNumber,
-            "profilePic" to ""
+            "profilePic" to "",
+            "serverIds" to user.serverIds,
+            "chatIds" to user.chatIds
         )
 
         val result = db.collection("users").add(newUser).await()
-        updateUser(
+        return updateUser(
             user.copy(
-                userId = result.id,
-                profilePic = user.profilePic?.let { uploadFile(uri = it, userId = result.id) }
+//                userId = result.id,
+                profilePic = user.profilePic?.let { uploadFile(uri = it, userId = user.userId) }
             )
         )
-        return user
     }
 
     override suspend fun updateUser(user: UserDto): UserDto {
@@ -40,7 +41,9 @@ class FirebaseUser : BaseFirebaseUser {
             "birthday" to user.birthday,
             "email" to user.email,
             "phoneNumber" to user.phoneNumber,
-            "profilePic" to user.profilePic
+            "profilePic" to user.profilePic,
+            "serverIds" to user.serverIds,
+            "chatIds" to user.chatIds
         )
 
         val result = db.collection("users").document(user.userId).set(updatedUser).await()

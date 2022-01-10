@@ -31,7 +31,7 @@ class SplashScreenViewModel @Inject constructor(
         retrieveCurrentUser()
     }
 
-    private fun retrieveCurrentUser() = viewModelScope.launch{
+    private fun retrieveCurrentUser() = viewModelScope.launch {
         _user.value = repository.getCurrentUser()
         isLoading.value = false
     }

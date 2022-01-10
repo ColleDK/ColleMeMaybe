@@ -1,10 +1,10 @@
-package dk.colle.collememaybe.dto
+package dk.colle.collememaybe.model
 
 import android.net.Uri
-import dk.colle.collememaybe.model.MessageModel
+import dk.colle.collememaybe.dto.MessageDto
 import java.util.*
 
-data class MessageDto(
+data class MessageModel(
     val messageId: String,
     val senderId: String,
     val message: String?,
@@ -12,8 +12,8 @@ data class MessageDto(
     val timestamp: Date
 ) {
     companion object{
-        fun MessageDto.toModel(): MessageModel {
-            return MessageModel(
+        fun MessageModel.toDto(): MessageDto {
+            return MessageDto(
                 messageId, senderId, message, picture, timestamp
             )
         }

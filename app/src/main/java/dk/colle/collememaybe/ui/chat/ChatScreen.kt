@@ -10,13 +10,13 @@ import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import dk.colle.collememaybe.dto.MessageDto
-import dk.colle.collememaybe.ui.auth.create_user.CreateUserEvent
 import dk.colle.collememaybe.ui.standardcomponents.HeaderText
 import dk.colle.collememaybe.ui.standardcomponents.ImageUri
 import dk.colle.collememaybe.util.UiEvent
@@ -50,14 +50,13 @@ fun ChatScreen(
         }
     }
 
-
     ChatList()
 }
 
 
 @Composable
 fun ChatList(viewModel: ChatScreenViewModel = hiltViewModel()) {
-    viewModel.chat.value?.let { chatDto ->
+    viewModel.chat.collectAsState().value?.let { chatDto ->
         LazyColumn(modifier = Modifier.fillMaxSize(1f)) {
             items(chatDto.messages) { message ->
                 viewModel.getSenderUser(message.senderId)
@@ -71,7 +70,7 @@ fun ChatList(viewModel: ChatScreenViewModel = hiltViewModel()) {
 fun ChatItem(message: MessageDto, viewModel: ChatScreenViewModel = hiltViewModel()) {
     Box(modifier = Modifier.fillMaxWidth(1f)) {
         Row(modifier = Modifier.fillMaxWidth(1f), verticalAlignment = Alignment.CenterVertically) {
-            viewModel.senders.value[message.senderId]?.let { sender ->
+            viewModel.senders.collectAsState().value[message.senderId]?.let { sender ->
                 sender.profilePic?.let { profilePic ->
                     ImageUri(
                         uri = profilePic,
@@ -82,8 +81,8 @@ fun ChatItem(message: MessageDto, viewModel: ChatScreenViewModel = hiltViewModel
                     )
                 }
             }
-            Column() {
-                viewModel.senders.value[message.senderId]?.let {
+            Column {
+                viewModel.senders.collectAsState().value[message.senderId]?.let {
                     HeaderText(title = it.name)
                 }
                 if (message.message != null) {

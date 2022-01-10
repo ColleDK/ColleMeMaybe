@@ -5,4 +5,5 @@ sealed class LoginUserEvent {
     data class OnEditPassword(val password: String) : LoginUserEvent()
     object ToggleShowPassword : LoginUserEvent()
     object OnLoginUser : LoginUserEvent()
+    data class OnClickResetPassword(val email: String) : LoginUserEvent()
 }

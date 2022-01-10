@@ -1,6 +1,5 @@
 package dk.colle.collememaybe.ui.chat
 
-import android.os.Message
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -8,9 +7,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dk.colle.collememaybe.dto.ChatDto
+import dk.colle.collememaybe.dto.ChatDto.Companion.toModel
 import dk.colle.collememaybe.dto.MessageDto
 import dk.colle.collememaybe.dto.UserDto
+import dk.colle.collememaybe.model.ChatModel
 import dk.colle.collememaybe.repository.chat.BaseChatRepository
 import dk.colle.collememaybe.repository.user.BaseUserRepository
 import dk.colle.collememaybe.util.UiEvent
@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,7 +34,7 @@ class ChatScreenViewModel @Inject constructor(
     private val lastAction: MutableState<LastAction?> = mutableStateOf(null)
     private val deletedMessage = mutableStateOf<MessageDto?>(null)
 
-    private val _chat = MutableStateFlow<ChatDto?>(null)
+    private val _chat = MutableStateFlow<ChatModel?>(null)
     val chat = _chat.asStateFlow()
 
     private val _senders = MutableStateFlow<HashMap<String, UserDto>>(hashMapOf())
@@ -48,13 +47,14 @@ class ChatScreenViewModel @Inject constructor(
         currentChatId = ""
         savedStateHandle.get<String>("chatId")?.let {
             currentChatId = it
+            Log.d(TAG, "Current chat id is $currentChatId")
             loadChat()
         }
     }
 
     private fun loadChat() = viewModelScope.launch {
         try {
-            repository.getChat(chatId = currentChatId)
+            _chat.value = repository.getChat(chatId = currentChatId)?.toModel()
         } catch (e: Exception) {
             Log.d(TAG, e.message.toString())
         }

@@ -4,12 +4,14 @@ import dk.colle.collememaybe.dto.ChatDto
 import dk.colle.collememaybe.dto.MessageDto
 import dk.colle.collememaybe.repository.firebase.auth.BaseAuthenticator
 import dk.colle.collememaybe.repository.firebase.chat.BaseFirebaseChat
+import dk.colle.collememaybe.repository.firebase.message.BaseFirebaseMessage
 import java.lang.Exception
 import javax.inject.Inject
 
 class ChatRepository @Inject constructor(
     private val authenticator: BaseAuthenticator,
-    private val firebaseChat: BaseFirebaseChat
+    private val firebaseChat: BaseFirebaseChat,
+    private val firebaseMessage: BaseFirebaseMessage
 ) : BaseChatRepository {
 
     override suspend fun getChat(chatId: String): ChatDto? {

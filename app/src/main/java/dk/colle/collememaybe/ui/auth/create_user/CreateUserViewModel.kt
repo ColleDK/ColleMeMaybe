@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dk.colle.collememaybe.dto.UserDto
 import dk.colle.collememaybe.repository.auth.BaseAuthRepository
@@ -18,7 +17,6 @@ import dk.colle.collememaybe.util.UiEvent
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
-import java.lang.Exception
 import javax.inject.Inject
 
 @HiltViewModel
@@ -69,12 +67,15 @@ class CreateUserViewModel @Inject constructor(
                 CurrentDateFormatter.DATEFORMATTER.parse(birthday)?.let {
                     firebaseUser.createUser(
                         UserDto(
-                            userId = "",
+                            userId = result.uid,
                             name = name,
                             birthday = it,
                             email = email,
                             phoneNumber = phoneNumber,
-                            profilePic = null
+                            profilePic = null,
+                            serverIds = listOf(),
+                            chatIds = listOf(),
+                            friendIds = listOf()
                         )
                     )
                     sendUiEvent(UiEvent.Navigate(Routes.START_SCREEN))
