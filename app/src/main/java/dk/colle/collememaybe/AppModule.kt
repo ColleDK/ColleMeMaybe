@@ -57,7 +57,8 @@ object AppModule {
         return ChatRepository(
             authenticator = provideBaseAuthenticator(),
             firebaseChat = provideBaseFirebaseChat(),
-            firebaseMessage = provideBaseFirebaseMessage()
+            firebaseMessage = provideBaseFirebaseMessage(),
+            firebaseUser = provideBaseFirebaseUser()
         )
     }
 

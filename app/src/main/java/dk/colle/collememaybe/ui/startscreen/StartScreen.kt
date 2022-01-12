@@ -50,12 +50,14 @@ fun StartScreenServerList(viewmodel: StartScreenViewModel = hiltViewModel()) {
 
 @Composable
 fun StartScreenServerItem(server: ServerModel) {
-    ImageUri(
-        uri = server.serverPicUri,
-        modifier = Modifier
-            .size(64.dp)
-            .wrapContentSize()
-            .padding(5.dp)
-            .clip(CircleShape)
-    )
+    server.serverPicUri?.let {
+        ImageUri(
+            uri = it,
+            modifier = Modifier
+                .size(64.dp)
+                .wrapContentSize()
+                .padding(5.dp)
+                .clip(CircleShape)
+        )
+    }
 }

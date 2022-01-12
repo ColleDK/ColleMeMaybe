@@ -8,7 +8,7 @@ data class MessageModel(
     val messageId: String,
     val senderId: String,
     val message: String?,
-    val picture: Uri?,
+    val picture: String?,
     val timestamp: Date
 ) {
     companion object{

@@ -33,7 +33,7 @@ class FirebaseMessage : BaseFirebaseMessage {
         return updateMessage(messageId = result.id,
             newMessage = message.copy(
                 messageId = result.id,
-                picture = message.picture?.let { uploadFile(it, result.id) }
+                picture = message.picture?.let { uploadFile(it, result.id).toString() }
             )
         )
     }
@@ -54,8 +54,9 @@ class FirebaseMessage : BaseFirebaseMessage {
         return newMessage
     }
 
-    private suspend fun uploadFile(uri: Uri, messageId: String): Uri? {
-        return storageRef.child(messageId).child("messagePic").putFile(uri).await().uploadSessionUri
+    private suspend fun uploadFile(uri: String, messageId: String): Uri? {
+        return storageRef.child(messageId).child("messagePic").putFile(Uri.parse(uri))
+            .await().uploadSessionUri
 
     }
 

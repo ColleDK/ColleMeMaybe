@@ -6,7 +6,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.SnackbarResult
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -16,9 +19,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import dk.colle.collememaybe.dto.MessageDto
+import dk.colle.collememaybe.model.MessageModel
 import dk.colle.collememaybe.ui.standardcomponents.HeaderText
 import dk.colle.collememaybe.ui.standardcomponents.ImageUri
+import dk.colle.collememaybe.ui.standardcomponents.InputField
 import dk.colle.collememaybe.util.UiEvent
 import kotlinx.coroutines.flow.collectLatest
 
@@ -57,17 +61,31 @@ fun ChatScreen(
 @Composable
 fun ChatList(viewModel: ChatScreenViewModel = hiltViewModel()) {
     viewModel.chat.collectAsState().value?.let { chatDto ->
-        LazyColumn(modifier = Modifier.fillMaxSize(1f)) {
-            items(chatDto.messages) { message ->
-                viewModel.getSenderUser(message.senderId)
-                ChatItem(message = message)
+
+        Surface(Modifier.fillMaxSize(1f)) {
+            Column(Modifier.fillMaxWidth(1f)) {
+
+                // The header consist of all other users' name
+                HeaderText(title = chatDto.users.filter { it.userId != viewModel.currentUser.collectAsState().value?.userId }
+                    .map { it.name }
+                    .toString())
+
+                // All the messages sent in a recyclerview
+                LazyColumn(modifier = Modifier.fillMaxWidth(1f)) {
+                    items(chatDto.messages) { message ->
+                        viewModel.getSenderUser(message.senderId)
+                        ChatItem(message = message)
+                    }
+                }
+
+                ChatMessageRow()
             }
         }
     }
 }
 
 @Composable
-fun ChatItem(message: MessageDto, viewModel: ChatScreenViewModel = hiltViewModel()) {
+fun ChatItem(message: MessageModel, viewModel: ChatScreenViewModel = hiltViewModel()) {
     Box(modifier = Modifier.fillMaxWidth(1f)) {
         Row(modifier = Modifier.fillMaxWidth(1f), verticalAlignment = Alignment.CenterVertically) {
             viewModel.senders.collectAsState().value[message.senderId]?.let { sender ->
@@ -93,4 +111,25 @@ fun ChatItem(message: MessageDto, viewModel: ChatScreenViewModel = hiltViewModel
             }
         }
     }
+}
+
+
+@Composable
+fun ChatMessageRow(viewModel: ChatScreenViewModel = hiltViewModel()) {
+    Row(Modifier.fillMaxWidth(1f), verticalAlignment = Alignment.CenterVertically) {
+        InputField(
+            textState = viewModel.chatMessageState,
+            onValueChange = { viewModel.onEvent(ChatEvent.OnEditMessage(message = it)) },
+            label = "Send message in ${
+                viewModel.senders.collectAsState().value.filter { it.key != viewModel.currentUser.collectAsState().value?.userId }
+                    .map { it.value.name }
+            }",
+            widthSize = 1f,
+            maxLines = 25,
+            leadIcon = Icons.Filled.Add,
+            leadIconClick = { /*TODO*/ },
+            leadIconDesc = "Add button"
+        )
+    }
+
 }

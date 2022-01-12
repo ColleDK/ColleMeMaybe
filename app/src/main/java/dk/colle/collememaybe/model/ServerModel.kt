@@ -5,7 +5,7 @@ import dk.colle.collememaybe.dto.ServerDto
 
 data class ServerModel(
     val serverId: String,
-    val serverPicUri: Uri,
+    val serverPicUri: String?,
     val messages: List<MessageModel>,
     val users: List<UserModel>,
 ) {

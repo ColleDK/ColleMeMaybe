@@ -1,6 +1,7 @@
 package dk.colle.collememaybe.repository.firebase.user
 
 import android.net.Uri
+import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -29,7 +30,7 @@ class FirebaseUser : BaseFirebaseUser {
         return updateUser(
             user.copy(
 //                userId = result.id,
-                profilePic = user.profilePic?.let { uploadFile(uri = it, userId = user.userId) }
+                profilePic = user.profilePic?.let { uploadFile(uri = it, userId = user.userId).toString() }
             )
         )
     }
@@ -56,7 +57,11 @@ class FirebaseUser : BaseFirebaseUser {
 
 
     override suspend fun getUser(userId: String): UserDto? {
-        return db.collection("users").document(userId).get().await().toObject(UserDto::class.java)
+        val user = db.collection("users").document(userId).get().await()
+        Log.d(TAG, "Get user got user with data ${user.data}")
+        val userModel = user.toObject(UserDto::class.java)
+        Log.d(TAG, "Current user model is ${userModel.toString()}")
+        return userModel
     }
 
     override suspend fun getUsers(userIds: List<String>): List<UserDto> {
@@ -81,8 +86,8 @@ class FirebaseUser : BaseFirebaseUser {
         TODO("Not yet implemented")
     }
 
-    private suspend fun uploadFile(uri: Uri, userId: String): Uri? {
-        return storageRef.child(userId).child("profilePic").putFile(uri).await().uploadSessionUri
+    private suspend fun uploadFile(uri: String, userId: String): Uri? {
+        return storageRef.child(userId).child("profilePic").putFile(Uri.parse(uri)).await().uploadSessionUri
 
     }
 

@@ -10,7 +10,7 @@ data class UserModel(
     val birthday: Date,
     val email: String,
     val phoneNumber: String,
-    val profilePic: Uri?,
+    val profilePic: String?,
     val serverIds: List<String>,
     val chatIds: List<String>,
     val friendIds: List<String>

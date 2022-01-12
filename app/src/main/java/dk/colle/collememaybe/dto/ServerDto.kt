@@ -6,10 +6,10 @@ import dk.colle.collememaybe.model.ServerModel
 import dk.colle.collememaybe.model.UserModel
 
 data class ServerDto(
-    val serverId: String,
-    val serverPicUri: Uri,
-    val messages: List<MessageModel>,
-    val users: List<UserModel>,
+    val serverId: String = "",
+    val serverPicUri: String? = null,
+    val messages: List<MessageModel> = listOf(),
+    val users: List<UserModel> = listOf(),
 ) {
     companion object{
         fun ServerDto.toModel(): ServerModel {
